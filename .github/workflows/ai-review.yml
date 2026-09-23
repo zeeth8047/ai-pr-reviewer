@@ -1,0 +1,29 @@
+name: AI PR Review
+
+# Runs the AI reviewer on every pull request. The action posts (or updates)
+# a single review comment per PR.
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  ai-review:
+    name: AI code review
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write # needed to post the review comment
+    steps:
+      - name: Check out the action
+        uses: actions/checkout@v4
+
+      - name: Run AI reviewer
+        uses: ./
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          llm-api-key: ${{ secrets.LLM_API_KEY }}
+          # llm-base-url: https://api.openai.com/v1  # default; override for Azure/Ollama/etc.
+          # llm-model: gpt-4o-mini                    # default
+          # max-diff-chars: "40000"                   # default
