@@ -1,0 +1,50 @@
+name: "AI PR Reviewer"
+description: >-
+  Posts an AI-generated code review comment on pull requests using any
+  OpenAI-compatible chat completions API.
+author: "zeeth8047"
+
+branding:
+  icon: "zap"
+  color: "blue"
+
+inputs:
+  github-token:
+    description: >-
+      GitHub token used to read the PR diff and post the review comment.
+      Pass secrets.GITHUB_TOKEN.
+    required: true
+  llm-api-key:
+    description: >-
+      API key for the LLM provider. Store it as a repository secret
+      (e.g. LLM_API_KEY); never hardcode it in a workflow.
+    required: true
+  llm-base-url:
+    description: >-
+      Base URL of the OpenAI-compatible chat completions endpoint.
+      Point it at OpenAI, Azure OpenAI, Ollama, or any compatible server.
+    required: false
+    default: "https://api.openai.com/v1"
+  llm-model:
+    description: "Model name to request from the endpoint."
+    required: false
+    default: "gpt-4o-mini"
+  max-diff-chars:
+    description: >-
+      Maximum diff characters sent to the LLM; larger diffs are truncated
+      on a line boundary.
+    required: false
+    default: "40000"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Run AI review
+      shell: bash
+      run: python3 "${{ github.action_path }}/scripts/review.py"
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        LLM_API_KEY: ${{ inputs.llm-api-key }}
+        LLM_BASE_URL: ${{ inputs.llm-base-url }}
+        LLM_MODEL: ${{ inputs.llm-model }}
+        MAX_DIFF_CHARS: ${{ inputs.max-diff-chars }}

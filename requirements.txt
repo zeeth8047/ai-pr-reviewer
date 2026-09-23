@@ -1,0 +1,4 @@
+# ai-pr-reviewer has no third-party dependencies.
+# scripts/review.py uses only the Python standard library
+# (argparse, json, os, sys, urllib).
+# Python 3.8+ recommended (3.x ships with ubuntu-latest runners).
